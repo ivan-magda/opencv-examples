@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Text?>
+
+<BorderPane xmlns="http://javafx.com/javafx/8.0.112" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ivanmagda.cv.Controller">
+    <bottom>
+        <Button fx:id="button" mnemonicParsing="false" onAction="#startCamera" text="Start Camera" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+            </padding>
+            <BorderPane.margin>
+                <Insets bottom="16.0" />
+            </BorderPane.margin>
+        </Button>
+    </bottom>
+    <center>
+        <ImageView fx:id="currentFrame" fitHeight="320.0" fitWidth="320.0" pickOnBounds="true" preserveRatio="true" BorderPane.alignment="CENTER">
+            <BorderPane.margin>
+                <Insets bottom="16.0" left="16.0" right="16.0" top="16.0" />
+            </BorderPane.margin>
+        </ImageView>
+    </center>
+    <right>
+        <VBox spacing="8.0" BorderPane.alignment="CENTER">
+            <Text text="Controls">
+                <VBox.margin>
+                    <Insets bottom="8.0" right="8.0" top="16.0" />
+                </VBox.margin>
+            </Text>
+            <CheckBox fx:id="grayscale" mnemonicParsing="false" text="Show in gray scale" />
+            <CheckBox fx:id="logoCheckBox" mnemonicParsing="false" onAction="#loadLogo" text="Show logo" />
+            <BorderPane.margin>
+                <Insets right="16.0" />
+            </BorderPane.margin>
+        </VBox>
+    </right>
+</BorderPane>
