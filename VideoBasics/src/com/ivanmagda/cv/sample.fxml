@@ -35,6 +35,7 @@
             </Text>
             <CheckBox fx:id="grayscale" mnemonicParsing="false" text="Show in gray scale" />
             <CheckBox fx:id="logoCheckBox" mnemonicParsing="false" onAction="#loadLogo" text="Show logo" />
+         <ImageView fx:id="histogram" fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
             <BorderPane.margin>
                 <Insets right="16.0" />
             </BorderPane.margin>
