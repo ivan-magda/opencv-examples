@@ -1,4 +1,4 @@
-# OpenCV with Java
+# OpenCV
 
 Example projects on the usage of OpenCV with Java.
 
