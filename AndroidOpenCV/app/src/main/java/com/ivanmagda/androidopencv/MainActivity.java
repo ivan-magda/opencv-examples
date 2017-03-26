@@ -1,7 +1,6 @@
 package com.ivanmagda.androidopencv;
 
 import android.os.Bundle;
-import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
