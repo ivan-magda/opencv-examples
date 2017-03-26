@@ -24,14 +24,28 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        configure();
+    }
+
+    private void configure() {
+        findViewById(R.id.btn_camera_output).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startDemoActivityWithClass(CameraOutput.class);
+            }
+        });
 
         findViewById(R.id.btn_feature_extraction).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, FeatureExtraction.class);
-                startActivity(intent);
+                startDemoActivityWithClass(FeatureExtraction.class);
             }
         });
+    }
+
+    private void startDemoActivityWithClass(Class<?> cls) {
+        Intent intent = new Intent(MainActivity.this, cls);
+        startActivity(intent);
     }
 
 }
