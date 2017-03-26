@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">AndroidOpenCV</string>
+    <string name="btn_feature_extraction">Feature Extraction</string>
 </resources>
