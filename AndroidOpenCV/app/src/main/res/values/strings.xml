@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">AndroidOpenCV</string>
     <string name="btn_feature_extraction">Feature Extraction</string>
+    <string name="btn_camera_output">Camera Output</string>
 </resources>
