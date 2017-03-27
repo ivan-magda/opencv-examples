@@ -3,26 +3,34 @@
 #include "ImageUtils.h" // Handy functions for debugging OpenCV images, by Shervin Emami.
 
 
+const int MEDIAN_BLUR_FILTER_SIZE = 7;
+const int LAPLACIAN_FILTER_SIZE = 5;
+const int EDGES_THRESHOLD = 80;
+const int EVIL_EDGE_THRESHOLD = 12;
+const int NUM_SKIN_POINTS = 6;
+
 // Convert the given photo into a cartoon-like or painting-like image.
 // Set sketchMode to true if you want a line drawing instead of a painting.
 // Set alienMode to true if you want alien skin instead of human.
 // Set evilMode to true if you want an "evil" character instead of a "good" character.
-// Set debugType to 1 to show where skin color is taken from, and 2 to show the skin mask in a new window (for desktop).
+// Set debugType to 1 to show where skin color is taken from, and 2 to show the skin mask
+// in a new window (for desktop).
 void cartoonifyImage(Mat srcColor, Mat dst, bool sketchMode, bool alienMode, bool evilMode, int debugType) {
     // Convert from BGR color to Grayscale
     Mat srcGray;
     cvtColor(srcColor, srcGray, CV_BGR2GRAY);
 
     // Remove the pixel noise with a good Median filter, before we start detecting edges.
-    medianBlur(srcGray, srcGray, 7);
+    medianBlur(srcGray, srcGray, MEDIAN_BLUR_FILTER_SIZE);
 
     Size size = srcColor.size();
     Mat mask = Mat(size, CV_8U);
     Mat edges = Mat(size, CV_8U);
+
     if (!evilMode) {
         // Generate a nice edge mask, similar to a pencil line drawing.
-        Laplacian(srcGray, edges, CV_8U, 5);
-        threshold(edges, mask, 80, 255, THRESH_BINARY_INV);
+        Laplacian(srcGray, edges, CV_8U, LAPLACIAN_FILTER_SIZE);
+        threshold(edges, mask, EDGES_THRESHOLD, 255, THRESH_BINARY_INV);
         // Mobile cameras usually have lots of noise, so remove small
         // dots of black noise from the black & white edge mask.
         removePepperNoise(mask);
@@ -33,7 +41,7 @@ void cartoonifyImage(Mat srcColor, Mat dst, bool sketchMode, bool alienMode, boo
         Scharr(srcGray, edges, CV_8U, 1, 0);
         Scharr(srcGray, edges2, CV_8U, 1, 0, -1);
         edges += edges2;
-        threshold(edges, mask, 12, 255, THRESH_BINARY_INV);
+        threshold(edges, mask, EVIL_EDGE_THRESHOLD, 255, THRESH_BINARY_INV);
         medianBlur(mask, mask, 3);
     }
     //imshow("edges", edges);
@@ -51,6 +59,7 @@ void cartoonifyImage(Mat srcColor, Mat dst, bool sketchMode, bool alienMode, boo
     Size smallSize;
     smallSize.width = size.width / 2;
     smallSize.height = size.height / 2;
+
     Mat smallImg = Mat(smallSize, CV_8UC3);
     resize(srcColor, smallImg, smallSize, 0, 0, INTER_LINEAR);
 
@@ -58,6 +67,7 @@ void cartoonifyImage(Mat srcColor, Mat dst, bool sketchMode, bool alienMode, boo
     // while blurring the flat regions, like a cartoon.
     Mat tmp = Mat(smallSize, CV_8UC3);
     int repetitions = 7;        // Repetitions for strong cartoon effect.
+
     for (int i = 0; i < repetitions; i++) {
         int size = 9;           // Filter size. Has a large effect on speed.
         double sigmaColor = 9;  // Filter color strength.
@@ -109,14 +119,15 @@ void changeFacialSkinColor(Mat smallImgBGR, Mat bigEdges, int debugType) {
     // YCrCb Skin detector and color changer using multiple flood fills into a mask.
     // Apply flood fill on many points around the face, to cover different shades & colors of the face.
     // Note that these values are dependent on the face outline, drawn in drawFaceStickFigure().
-    int const NUM_SKIN_POINTS = 6;
     Point skinPts[NUM_SKIN_POINTS];
+
     skinPts[0] = Point(sw / 2, sh / 2 - sh / 6);
     skinPts[1] = Point(sw / 2 - sw / 11, sh / 2 - sh / 6);
     skinPts[2] = Point(sw / 2 + sw / 11, sh / 2 - sh / 6);
     skinPts[3] = Point(sw / 2, sh / 2 + sh / 16);
     skinPts[4] = Point(sw / 2 - sw / 9, sh / 2 + sh / 16);
     skinPts[5] = Point(sw / 2 + sw / 9, sh / 2 + sh / 16);
+
     // Skin might be fairly dark, or slightly less colorful.
     // Skin might be very bright, or slightly more colorful but not much more blue.
     const int LOWER_Y = 60;
@@ -124,12 +135,15 @@ void changeFacialSkinColor(Mat smallImgBGR, Mat bigEdges, int debugType) {
     const int LOWER_Cr = 25;
     const int UPPER_Cr = 15;
     const int LOWER_Cb = 20;
+
     const int UPPER_Cb = 15;
     Scalar lowerDiff = Scalar(LOWER_Y, LOWER_Cr, LOWER_Cb);
     Scalar upperDiff = Scalar(UPPER_Y, UPPER_Cr, UPPER_Cb);
+
     // Instead of drawing into the "yuv" image, just draw 1's into the "maskPlusBorder" image, so we can apply it later.
     // The "maskPlusBorder" is initialized with the edges, because floodFill() will not go across non-zero mask pixels.
     Mat edgeMask = mask.clone();    // Keep an duplicate copy of the edge mask.
+
     for (int i = 0; i < NUM_SKIN_POINTS; i++) {
         // Use the floodFill() mode that stores to an external mask, instead of the input image.
         const int flags = 4 | FLOODFILL_FIXED_RANGE | FLOODFILL_MASK_ONLY;
@@ -137,8 +151,10 @@ void changeFacialSkinColor(Mat smallImgBGR, Mat bigEdges, int debugType) {
         if (debugType >= 1)
             circle(smallImgBGR, skinPts[i], 5, CV_RGB(0, 0, 255), 1, CV_AA);
     }
-    if (debugType >= 2)
+
+    if (debugType >= 2) {
         imshow("flood mask", mask * 120); // Draw the edges as white and the skin region as grey.
+    }
 
     // After the flood fill, "mask" contains both edges and skin pixels, whereas
     // "edgeMask" just contains edges. So to get just the skin pixels, we can remove the edges from it.
@@ -172,6 +188,7 @@ void removePepperNoise(Mat &mask) {
         pUp2 += 2;
         pDown1 += 2;
         pDown2 += 2;
+
         for (int x = 2; x < mask.cols - 2; x++) {
             uchar v = *pThis;   // Get the current pixel value (either 0 or 255).
             // If the current pixel is black, but all the pixels on the 2-pixel-radius-border are white
