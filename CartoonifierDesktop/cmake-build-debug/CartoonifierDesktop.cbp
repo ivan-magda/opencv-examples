@@ -84,6 +84,18 @@
 				</MakeCommands>
 			</Target>
 		</Build>
+		<Unit filename="/Users/ivanmagda/Programming/diploma-work/opencv-examples/CartoonifierDesktop/ImageUtils.h">
+			<Option target="CartoonifierDesktop"/>
+		</Unit>
+		<Unit filename="/Users/ivanmagda/Programming/diploma-work/opencv-examples/CartoonifierDesktop/ImageUtils_0.7.cpp">
+			<Option target="CartoonifierDesktop"/>
+		</Unit>
+		<Unit filename="/Users/ivanmagda/Programming/diploma-work/opencv-examples/CartoonifierDesktop/cartoon.cpp">
+			<Option target="CartoonifierDesktop"/>
+		</Unit>
+		<Unit filename="/Users/ivanmagda/Programming/diploma-work/opencv-examples/CartoonifierDesktop/cartoon.h">
+			<Option target="CartoonifierDesktop"/>
+		</Unit>
 		<Unit filename="/Users/ivanmagda/Programming/diploma-work/opencv-examples/CartoonifierDesktop/main.cpp">
 			<Option target="CartoonifierDesktop"/>
 		</Unit>
