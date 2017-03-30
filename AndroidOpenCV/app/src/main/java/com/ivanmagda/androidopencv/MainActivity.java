@@ -2,9 +2,13 @@ package com.ivanmagda.androidopencv;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.SyncStateContract;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
+
+import com.ivanmagda.androidopencv.utils.Constants;
 
 import org.opencv.android.OpenCVLoader;
 
@@ -13,6 +17,8 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
     static {
+        System.loadLibrary(Constants.NDK_MODULE_NAME);
+
         if (!OpenCVLoader.initDebug()) {
             Log.d(TAG, "Unable to load OpenCV");
         } else {
@@ -41,11 +47,16 @@ public class MainActivity extends AppCompatActivity {
                 startDemoActivityWithClass(FeatureExtraction.class);
             }
         });
+
+        TextView jniTextView = (TextView) findViewById(R.id.tv_jni_msg);
+        jniTextView.setText(getMsgFromJni());
     }
 
     private void startDemoActivityWithClass(Class<?> cls) {
         Intent intent = new Intent(MainActivity.this, cls);
         startActivity(intent);
     }
+
+    public native String getMsgFromJni();
 
 }
