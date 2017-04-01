@@ -29,7 +29,7 @@ public class CameraOutput extends AppCompatActivity
                 case LoaderCallbackInterface.SUCCESS: {
                     Log.i(TAG, "OpenCV loaded successfully");
                     mOpenCvCameraView.enableView();
-                    mOpenCvCameraView.setupFPS();
+                    mOpenCvCameraView.setup();
                 }
                 break;
                 default: {

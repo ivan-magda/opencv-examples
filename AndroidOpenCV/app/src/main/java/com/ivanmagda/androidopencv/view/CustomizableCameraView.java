@@ -9,6 +9,7 @@ import org.opencv.android.JavaCameraView;
 
 import java.util.List;
 
+import static android.hardware.Camera.Parameters.FOCUS_MODE_CONTINUOUS_VIDEO;
 import static android.hardware.Camera.Parameters.PREVIEW_FPS_MAX_INDEX;
 import static android.hardware.Camera.Parameters.PREVIEW_FPS_MIN_INDEX;
 
@@ -20,9 +21,14 @@ public final class CustomizableCameraView extends JavaCameraView {
         super(context, attrs);
     }
 
-    public void setupFPS() {
+    public void setup() {
         Camera.Parameters params = mCamera.getParameters();
         setupCaptureParams(params);
+
+        List<String> FocusModes = params.getSupportedFocusModes();
+        if (FocusModes.contains(FOCUS_MODE_CONTINUOUS_VIDEO)) {
+            params.setFocusMode(FOCUS_MODE_CONTINUOUS_VIDEO);
+        }
 
         mCamera.setParameters(params);
     }
