@@ -2,4 +2,8 @@
     <string name="app_name">AndroidOpenCV</string>
     <string name="btn_feature_extraction">Feature Extraction</string>
     <string name="btn_camera_output">Camera Output</string>
+
+    <string name="title_activity_cartoon">CartoonActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
 </resources>

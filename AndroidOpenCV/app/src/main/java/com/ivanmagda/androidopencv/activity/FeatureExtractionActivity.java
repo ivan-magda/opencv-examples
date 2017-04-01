@@ -1,4 +1,4 @@
-package com.ivanmagda.androidopencv;
+package com.ivanmagda.androidopencv.activity;
 
 import android.content.res.AssetManager;
 import android.graphics.Bitmap;
@@ -8,6 +8,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.SurfaceView;
 import android.view.WindowManager;
+
+import com.ivanmagda.androidopencv.R;
 
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
@@ -31,10 +33,10 @@ import java.io.InputStream;
 import java.util.LinkedList;
 import java.util.List;
 
-public class FeatureExtraction extends AppCompatActivity
+public class FeatureExtractionActivity extends AppCompatActivity
         implements CameraBridgeViewBase.CvCameraViewListener2 {
 
-    private static final String TAG = "FeatureExtraction";
+    private static final String TAG = "FeatureExtractionActivity";
     private static final String SOURCE_IMAGE_NAME = "dollar.jpeg";
 
     private int mWidth, mHeight;

@@ -31,27 +31,30 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <activity android:name=".MainActivity">
+        <activity android:name=".activity.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
-            android:name=".FeatureExtraction"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
-
-        </activity>
-
+            android:name=".activity.FeatureExtractionActivity"
+            android:parentActivityName=".activity.MainActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
         <activity
-            android:name=".CameraOutput"
-            android:parentActivityName=".MainActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar">
-
+            android:name=".activity.CameraOutputActivity"
+            android:parentActivityName=".activity.MainActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"></activity>
+        <activity
+            android:name=".activity.CartoonActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_cartoon"
+            android:parentActivityName=".activity.MainActivity"
+            android:theme="@style/FullscreenTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.ivanmagda.androidopencv.activity.MainActivity" />
         </activity>
     </application>
 

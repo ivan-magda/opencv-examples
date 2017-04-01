@@ -1,4 +1,4 @@
-package com.ivanmagda.androidopencv;
+package com.ivanmagda.androidopencv.activity;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -6,6 +6,7 @@ import android.util.Log;
 import android.view.SurfaceView;
 import android.view.WindowManager;
 
+import com.ivanmagda.androidopencv.R;
 import com.ivanmagda.androidopencv.view.CustomizableCameraView;
 
 import org.opencv.android.BaseLoaderCallback;
@@ -15,10 +16,10 @@ import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 import org.opencv.core.Mat;
 
-public class CameraOutput extends AppCompatActivity
+public class CameraOutputActivity extends AppCompatActivity
         implements CameraBridgeViewBase.CvCameraViewListener2 {
 
-    private static final String TAG = "CameraOutput";
+    private static final String TAG = "CameraOutputActivity";
 
     private CustomizableCameraView mOpenCvCameraView;
 

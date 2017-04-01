@@ -1,13 +1,13 @@
-package com.ivanmagda.androidopencv;
+package com.ivanmagda.androidopencv.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.SyncStateContract;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.ivanmagda.androidopencv.R;
 import com.ivanmagda.androidopencv.utils.Constants;
 
 import org.opencv.android.OpenCVLoader;
@@ -37,14 +37,21 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btn_camera_output).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startDemoActivityWithClass(CameraOutput.class);
+                startDemoActivityWithClass(CameraOutputActivity.class);
             }
         });
 
         findViewById(R.id.btn_feature_extraction).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startDemoActivityWithClass(FeatureExtraction.class);
+                startDemoActivityWithClass(FeatureExtractionActivity.class);
+            }
+        });
+
+        findViewById(R.id.btn_cartoon).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startDemoActivityWithClass(CartoonActivity.class);
             }
         });
 
@@ -57,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    @SuppressWarnings("JniMissingFunction")
     public native String getMsgFromJni();
 
 }
