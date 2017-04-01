@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.SurfaceView;
 import android.view.WindowManager;
 
+import com.ivanmagda.androidopencv.view.CustomizableCameraView;
+
 import org.opencv.android.BaseLoaderCallback;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.android.CameraBridgeViewBase.CvCameraViewFrame;
@@ -18,7 +20,7 @@ public class CameraOutput extends AppCompatActivity
 
     private static final String TAG = "CameraOutput";
 
-    private CameraBridgeViewBase mOpenCvCameraView;
+    private CustomizableCameraView mOpenCvCameraView;
 
     private BaseLoaderCallback mLoaderCallback = new BaseLoaderCallback(this) {
         @Override
@@ -27,6 +29,7 @@ public class CameraOutput extends AppCompatActivity
                 case LoaderCallbackInterface.SUCCESS: {
                     Log.i(TAG, "OpenCV loaded successfully");
                     mOpenCvCameraView.enableView();
+                    mOpenCvCameraView.setupFPS();
                 }
                 break;
                 default: {
@@ -43,7 +46,7 @@ public class CameraOutput extends AppCompatActivity
         setContentView(R.layout.activity_camera_output);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
-        mOpenCvCameraView = (CameraBridgeViewBase) findViewById(R.id.java_camera_view);
+        mOpenCvCameraView = (CustomizableCameraView) findViewById(R.id.java_camera_view);
         mOpenCvCameraView.setVisibility(SurfaceView.VISIBLE);
         mOpenCvCameraView.setCvCameraViewListener(this);
     }
