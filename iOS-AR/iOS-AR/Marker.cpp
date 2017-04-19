@@ -53,17 +53,17 @@ int Marker::hammDistMarker(cv::Mat bits) {
   int dist=0;
   
   for (int y = 0; y < 5; y++) {
-    int minSum=1e5; //hamming distance to each possible word
+    int minSum = 1e5; //hamming distance to each possible word
     
     for (int p = 0; p < 4; p++) {
-      int sum=0;
+      int sum = 0;
       //now, count
-      for (int x=0;x<5;x++) {
+      for (int x = 0; x < 5; x++) {
         sum += bits.at<uchar>(y,x) == ids[p][x] ? 0 : 1;
       }
       
-      if (minSum>sum)
-        minSum=sum;
+      if (minSum > sum)
+        minSum = sum;
     }
     
     //do the and
@@ -105,11 +105,11 @@ int Marker::getMarkerId(cv::Mat &markerImage,int &nRotations) {
   int cellSize = markerImage.rows / 7;
   
   for (int y = 0; y < 7; y++) {
-    int inc=6;
+    int inc = 6;
     
-    if (y == 0 || y == 6) inc=1; //for first and last row, check the whole border
+    if (y == 0 || y == 6) inc = 1; //for first and last row, check the whole border
     
-    for (int x=0;x<7;x+=inc) {
+    for (int x = 0; x < 7; x += inc) {
       int cellX = x * cellSize;
       int cellY = y * cellSize;
       cv::Mat cell = grey(cv::Rect(cellX,cellY,cellSize,cellSize));
@@ -122,17 +122,17 @@ int Marker::getMarkerId(cv::Mat &markerImage,int &nRotations) {
     }
   }
   
-  cv::Mat bitMatrix = cv::Mat::zeros(5,5,CV_8UC1);
+  cv::Mat bitMatrix = cv::Mat::zeros(5, 5, CV_8UC1);
   
   //get information(for each inner square, determine if it is  black or white)
-  for (int y=0;y<5;y++) {
-    for (int x=0;x<5;x++) {
-      int cellX = (x+1)*cellSize;
-      int cellY = (y+1)*cellSize;
-      cv::Mat cell = grey(cv::Rect(cellX,cellY,cellSize,cellSize));
+  for (int y = 0; y < 5; y++) {
+    for (int x = 0; x < 5; x++) {
+      int cellX = (x + 1) * cellSize;
+      int cellY = (y + 1) * cellSize;
+      cv::Mat cell = grey(cv::Rect(cellX, cellY, cellSize, cellSize));
       
       int nZ = cv::countNonZero(cell);
-      if (nZ> (cellSize*cellSize) /2)
+      if (nZ > (cellSize * cellSize) /2)
         bitMatrix.at<uchar>(y,x) = 1;
     }
   }
@@ -146,7 +146,7 @@ int Marker::getMarkerId(cv::Mat &markerImage,int &nRotations) {
   
   std::pair<int,int> minDist(distances[0],0);
   
-  for (int i=1; i<4; i++) {
+  for (int i = 1; i < 4; i++) {
     //get the hamming distance to the nearest possible word
     rotations[i] = rotate(rotations[i-1]);
     distances[i] = hammDistMarker(rotations[i]);

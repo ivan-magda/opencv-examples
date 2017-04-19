@@ -127,7 +127,7 @@ void MarkerDetector::findContours(cv::Mat& thresholdImg, ContoursVector& contour
   
   contours.clear();
   
-  for (size_t i=0; i<allContours.size(); i++) {
+  for (size_t i = 0; i < allContours.size(); i++) {
     int contourSize = (unsigned int) allContours[i].size();
     if (contourSize > minContourPointsAllowed) {
       contours.push_back(allContours[i]);
@@ -144,16 +144,13 @@ void MarkerDetector::findContours(cv::Mat& thresholdImg, ContoursVector& contour
 #endif
 }
 
-void MarkerDetector::findCandidates
-(
- const ContoursVector& contours,
- std::vector<Marker>& detectedMarkers
- ) {
-  std::vector<cv::Point>  approxCurve;
-  std::vector<Marker>     possibleMarkers;
+void MarkerDetector::findCandidates(const ContoursVector& contours,
+                                    std::vector<Marker>& detectedMarkers) {
+  std::vector<cv::Point> approxCurve;
+  std::vector<Marker> possibleMarkers;
   
   // For each contour, analyze if it is a parallelepiped likely to be the marker
-  for (size_t i=0; i<contours.size(); i++) {
+  for (size_t i = 0; i < contours.size(); i++) {
     // Approximate to a polygon
     double eps = contours[i].size() * 0.05;
     cv::approxPolyDP(contours[i], approxCurve, eps, true);
@@ -182,8 +179,8 @@ void MarkerDetector::findCandidates
     // All tests are passed. Save marker candidate:
     Marker m;
     
-    for (int i = 0; i<4; i++)
-      m.points.push_back( cv::Point2f(approxCurve[i].x,approxCurve[i].y) );
+    for (int i = 0; i < 4; i++)
+      m.points.push_back(cv::Point2f(approxCurve[i].x,approxCurve[i].y));
     
     // Sort the points in anti-clockwise order
     // Trace a line between the first and second point.
@@ -206,7 +203,7 @@ void MarkerDetector::findCandidates
   for (size_t i = 0; i < possibleMarkers.size(); i++) {
     const Marker& m1 = possibleMarkers[i];
     
-    //calculate the average distance of each corner to the nearest corner of the other marker candidate
+    // calculate the average distance of each corner to the nearest corner of the other marker candidate
     for (size_t j = i + 1; j < possibleMarkers.size(); j++) {
       const Marker& m2 = possibleMarkers[j];
       
@@ -228,7 +225,7 @@ void MarkerDetector::findCandidates
   // Mark for removal the element of the pair with smaller perimeter
   std::vector<bool> removalMask (possibleMarkers.size(), false);
   
-  for (size_t i=0; i<tooNearCandidates.size(); i++) {
+  for (size_t i = 0; i < tooNearCandidates.size(); i++) {
     float p1 = perimeter(possibleMarkers[tooNearCandidates[i].first ].points);
     float p2 = perimeter(possibleMarkers[tooNearCandidates[i].second].points);
     
@@ -243,7 +240,7 @@ void MarkerDetector::findCandidates
   
   // Return candidates
   detectedMarkers.clear();
-  for (size_t i=0;i<possibleMarkers.size();i++) {
+  for (size_t i = 0; i < possibleMarkers.size(); i++) {
     if (!removalMask[i])
       detectedMarkers.push_back(possibleMarkers[i]);
   }
@@ -253,7 +250,7 @@ void MarkerDetector::recognizeMarkers(const cv::Mat& grayscale, std::vector<Mark
   std::vector<Marker> goodMarkers;
   
   // Identify the markers
-  for (size_t i=0;i<detectedMarkers.size();i++) {
+  for (size_t i = 0; i < detectedMarkers.size(); i++) {
     Marker& marker = detectedMarkers[i];
     
     // Find the perspective transformation that brings current marker to rectangular form
