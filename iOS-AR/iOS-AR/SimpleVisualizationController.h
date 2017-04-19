@@ -35,10 +35,10 @@
   CGSize m_frameSize;
 }
 
--(id) initWithGLView:(EAGLView*)view calibration:(CameraCalibration) calibration frameSize:(CGSize) size;
+- (id)initWithGLView:(EAGLView*)view calibration:(CameraCalibration) calibration frameSize:(CGSize) size;
 
--(void) drawFrame;
--(void) updateBackground:(BGRAVideoFrame) frame;
--(void) setTransformationList:(const std::vector<Transformation>&) transformations;
+- (void)drawFrame;
+- (void)updateBackground:(BGRAVideoFrame) frame;
+- (void)setTransformationList:(const std::vector<Transformation>&) transformations;
 
 @end

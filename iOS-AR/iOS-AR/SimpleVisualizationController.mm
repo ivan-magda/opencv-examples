@@ -29,7 +29,9 @@
 
 @implementation SimpleVisualizationController
 
--(id) initWithGLView:(EAGLView*)view calibration:(CameraCalibration) calibration frameSize:(CGSize) size {
+- (id)initWithGLView:(EAGLView*)view
+         calibration:(CameraCalibration) calibration
+           frameSize:(CGSize) size {
   if ((self = [super init])) {
     m_glview = view;
     
@@ -50,7 +52,7 @@
   return self;
 }
 
--(void) updateBackground:(BGRAVideoFrame) frame {
+- (void)updateBackground:(BGRAVideoFrame) frame {
   [m_glview setFramebuffer];
   
   glPixelStorei(GL_PACK_ALIGNMENT, 1);
@@ -64,7 +66,7 @@
   }
 }
 
--(void) setTransformationList:(const std::vector<Transformation>&) transformations {
+- (void)setTransformationList:(const std::vector<Transformation>&) transformations {
   m_transformations = transformations;
 }
 
@@ -102,7 +104,7 @@
   projectionMatrix.data[15] = 0.0;
 }
 
-- (void) drawBackground {
+- (void)drawBackground {
   GLfloat w = m_glview.bounds.size.width;
   GLfloat h = m_glview.bounds.size.height;
   
@@ -153,7 +155,7 @@
   glDisable(GL_TEXTURE_2D);
 }
 
-- (void) drawAR {
+- (void)drawAR {
   Matrix44 projectionMatrix;
   
   [self buildProjectionMatrixWithCameraMatrix: m_calibration.getIntrinsic()

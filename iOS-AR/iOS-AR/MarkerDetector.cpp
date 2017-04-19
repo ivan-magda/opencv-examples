@@ -31,8 +31,7 @@
 #include "DebugHelpers.hpp"
 
 MarkerDetector::MarkerDetector(CameraCalibration calibration)
-: m_minContourLengthAllowed(100)
-, markerSize(100,100) {
+: m_minContourLengthAllowed(100), markerSize(100,100) {
   cv::Mat(3,3, CV_32F, const_cast<float*>(&calibration.getIntrinsic().data[0])).copyTo(camMatrix);
   cv::Mat(4,1, CV_32F, const_cast<float*>(&calibration.getDistorsion().data[0])).copyTo(distCoeff);
   
@@ -70,8 +69,10 @@ const std::vector<Transformation>& MarkerDetector::getTransformations() const {
 }
 
 
-bool MarkerDetector::findMarkers(const BGRAVideoFrame& frame, std::vector<Marker>& detectedMarkers) {
-  cv::Mat bgraMat((unsigned int)frame.height, (unsigned int)frame.width, CV_8UC4, frame.data, frame.stride);
+bool MarkerDetector::findMarkers(const BGRAVideoFrame& frame,
+                                 std::vector<Marker>& detectedMarkers) {
+  cv::Mat bgraMat((unsigned int)frame.height, (unsigned int)frame.width, CV_8UC4,
+                  frame.data, frame.stride);
   
   // Convert the image to grayscale
   prepareImage(bgraMat, m_grayscaleImage);
@@ -121,7 +122,8 @@ void MarkerDetector::performThreshold(const cv::Mat& grayscale, cv::Mat& thresho
 #endif
 }
 
-void MarkerDetector::findContours(cv::Mat& thresholdImg, ContoursVector& contours, int minContourPointsAllowed) const {
+void MarkerDetector::findContours(cv::Mat& thresholdImg, ContoursVector& contours,
+                                  int minContourPointsAllowed) const {
   ContoursVector allContours;
   cv::findContours(thresholdImg, allContours, CV_RETR_LIST, CV_CHAIN_APPROX_NONE);
   
@@ -246,18 +248,22 @@ void MarkerDetector::findCandidates(const ContoursVector& contours,
   }
 }
 
-void MarkerDetector::recognizeMarkers(const cv::Mat& grayscale, std::vector<Marker>& detectedMarkers) {
+void MarkerDetector::recognizeMarkers(const cv::Mat& grayscale,
+                                      std::vector<Marker>& detectedMarkers) {
   std::vector<Marker> goodMarkers;
   
   // Identify the markers
   for (size_t i = 0; i < detectedMarkers.size(); i++) {
     Marker& marker = detectedMarkers[i];
     
-    // Find the perspective transformation that brings current marker to rectangular form
-    cv::Mat markerTransform = cv::getPerspectiveTransform(marker.points, m_markerCorners2d);
+    // Find the perspective transformation that brings current marker
+    // to rectangular form.
+    cv::Mat markerTransform = cv::getPerspectiveTransform(marker.points,
+                                                          m_markerCorners2d);
     
     // Transform image to get a canonical marker image
-    cv::warpPerspective(grayscale, canonicalMarkerImage,  markerTransform, markerSize);
+    cv::warpPerspective(grayscale, canonicalMarkerImage,  markerTransform,
+                        markerSize);
     
 #ifdef SHOW_DEBUG_IMAGES
     {
@@ -274,8 +280,11 @@ void MarkerDetector::recognizeMarkers(const cv::Mat& grayscale, std::vector<Mark
     int id = Marker::getMarkerId(canonicalMarkerImage, nRotations);
     if (id !=- 1) {
       marker.id = id;
-      //sort the points so that they are always in the same order no matter the camera orientation
-      std::rotate(marker.points.begin(), marker.points.begin() + 4 - nRotations, marker.points.end());
+      // sort the points so that they are always in the same order no matter
+      // the camera orientation
+      std::rotate(marker.points.begin(),
+                  marker.points.begin() + 4 - nRotations,
+                  marker.points.end());
       
       goodMarkers.push_back(marker);
     }
@@ -293,8 +302,11 @@ void MarkerDetector::recognizeMarkers(const cv::Mat& grayscale, std::vector<Mark
       }
     }
     
-    cv::TermCriteria termCriteria = cv::TermCriteria(cv::TermCriteria::MAX_ITER | cv::TermCriteria::EPS, 30, 0.01);
-    cv::cornerSubPix(grayscale, preciseCorners, cvSize(5,5), cvSize(-1,-1), termCriteria);
+    cv::TermCriteria termCriteria = cv::TermCriteria(cv::TermCriteria::MAX_ITER | cv::TermCriteria::EPS,
+                                                     30,
+                                                     0.01);
+    cv::cornerSubPix(grayscale, preciseCorners, cvSize(5,5), cvSize(-1,-1),
+                     termCriteria);
     
     // Copy refined corners position back to markers
     for (size_t i=0; i<goodMarkers.size(); i++) {
@@ -323,22 +335,22 @@ void MarkerDetector::recognizeMarkers(const cv::Mat& grayscale, std::vector<Mark
 
 
 void MarkerDetector::estimatePosition(std::vector<Marker>& detectedMarkers) {
-  for (size_t i=0; i<detectedMarkers.size(); i++) {
+  for (size_t i = 0; i < detectedMarkers.size(); i++) {
     Marker& m = detectedMarkers[i];
     
     cv::Mat Rvec;
     cv::Mat_<float> Tvec;
-    cv::Mat raux,taux;
-    cv::solvePnP(m_markerCorners3d, m.points, camMatrix, distCoeff,raux,taux);
-    raux.convertTo(Rvec,CV_32F);
-    taux.convertTo(Tvec ,CV_32F);
+    cv::Mat raux, taux;
+    cv::solvePnP(m_markerCorners3d, m.points, camMatrix, distCoeff, raux, taux);
+    raux.convertTo(Rvec, CV_32F);
+    taux.convertTo(Tvec, CV_32F);
     
     cv::Mat_<float> rotMat(3,3);
     cv::Rodrigues(Rvec, rotMat);
     
     // Copy to transformation matrix
-    for (int col=0; col<3; col++) {
-      for (int row=0; row<3; row++) {
+    for (int col = 0; col < 3; col++) {
+      for (int row = 0; row < 3; row++) {
         m.transformation.r().mat[row][col] = rotMat(row,col); // Copy rotation component
       }
       m.transformation.t().data[col] = Tvec(col); // Copy translation component
