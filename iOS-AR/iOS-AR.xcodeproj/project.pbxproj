@@ -465,6 +465,11 @@
 				INFOPLIST_FILE = "$(SRCROOT)/iOS-AR/iOS-AR-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = "";
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-fvisibility-inlines-hidden",
+					"-fvisibility=hidden",
+				);
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ivanmagda.iOS-AR";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -492,6 +497,11 @@
 				INFOPLIST_FILE = "$(SRCROOT)/iOS-AR/iOS-AR-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LIBRARY_SEARCH_PATHS = "";
+				OTHER_CPLUSPLUSFLAGS = (
+					"$(OTHER_CFLAGS)",
+					"-fvisibility-inlines-hidden",
+					"-fvisibility=hidden",
+				);
 				OTHER_LDFLAGS = "";
 				PRODUCT_BUNDLE_IDENTIFIER = "com.ivanmagda.iOS-AR";
 				PRODUCT_NAME = "$(TARGET_NAME)";
