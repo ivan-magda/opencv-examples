@@ -26,8 +26,7 @@
 #include <string>
 #include <sstream>
 
-template <typename T>
-std::string ToString(const T& value) {
+template <typename T> std::string ToString(const T& value) {
   std::ostringstream stream;
   stream << value;
   return stream.str();

@@ -116,7 +116,7 @@
   
   /*We create a serial queue to handle the processing of our frames*/
   dispatch_queue_t queue;
-  queue = dispatch_queue_create("com.Example_MarkerBasedAR.cameraQueue", NULL);
+  queue = dispatch_queue_create("com.ivanmagda.iOS-AR.cameraQueue", NULL);
   [captureOutput setSampleBufferDelegate:self queue:queue];
   
   // Set the video output to store frame in BGRA (It is supposed to be faster)
@@ -138,7 +138,8 @@
   
   NSError *error;
   
-  AVCaptureDeviceInput *videoIn = [AVCaptureDeviceInput deviceInputWithDevice:videoDevice error:&error];
+  AVCaptureDeviceInput *videoIn = [AVCaptureDeviceInput deviceInputWithDevice:videoDevice
+                                                                        error:&error];
   self.deviceInput = videoIn;
   
   if (nil != videoIn) {

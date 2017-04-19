@@ -64,9 +64,9 @@
   
   frameSize = CGSizeMake(640, 480);
   
-  self.visualizationController = [[SimpleVisualizationController alloc] initWithGLView:self.glview
-                                                                           calibration:camCalib
-                                                                             frameSize:frameSize];
+  self.visualizationController = [[SimpleVisualizationController alloc]initWithGLView: self.glview
+                                                                          calibration: camCalib
+                                                                            frameSize: frameSize];
   
   [super viewWillAppear:animated];
 }
