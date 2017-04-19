@@ -20,17 +20,24 @@
  * THE SOFTWARE.
  */
 
-#import <Availability.h>
+#ifndef DEBUG_HELPERS_HPP
+#define DEBUG_HELPERS_HPP
 
-#ifndef __IPHONE_8_0
-#warning "This project uses features only available in iOS SDK 8.0 and later."
-#endif
+#include <string>
+#include <sstream>
 
-#ifdef __cplusplus
-    #include <opencv2/opencv.hpp>
-#endif
+template <typename T>
+std::string ToString(const T& value) {
+  std::ostringstream stream;
+  stream << value;
+  return stream.str();
+}
 
-#ifdef __OBJC__
-  #import <UIKit/UIKit.h>
-  #import <Foundation/Foundation.h>
+namespace cv {
+  inline void showAndSave(std::string name, const cv::Mat& m) {
+    cv::imshow(name, m);
+    cv::imwrite(name + ".png", m);
+  }
+}
+
 #endif

@@ -20,13 +20,14 @@
  * THE SOFTWARE.
  */
 
-#import <UIKit/UIKit.h>
+#ifndef iOS_AR_TinyLA_hpp
+#define iOS_AR_TinyLA_hpp
 
-// File includes:
-#import "EAGLView.h"
+#include <vector>
+#include <opencv2/opencv.hpp>
 
-@interface ViewController : UIViewController
+float perimeter(const std::vector<cv::Point2f> &a);
 
-@property (weak, nonatomic) IBOutlet EAGLView *glview;
+bool isInto(cv::Mat &contour, std::vector<cv::Point2f> &b);
 
-@end
+#endif

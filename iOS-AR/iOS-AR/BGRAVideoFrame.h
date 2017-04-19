@@ -20,13 +20,19 @@
  * THE SOFTWARE.
  */
 
-#import <UIKit/UIKit.h>
+#ifndef iOS_AR_BGRAVideoFrame_h
+#define iOS_AR_BGRAVideoFrame_h
 
-// File includes:
-#import "EAGLView.h"
+#include <cstddef>
 
-@interface ViewController : UIViewController
+// A helper struct presenting interleaved BGRA image in memory.
+struct BGRAVideoFrame {
+  size_t width;
+  size_t height;
+  size_t stride;
+  
+  unsigned char * data;
+};
 
-@property (weak, nonatomic) IBOutlet EAGLView *glview;
 
-@end
+#endif

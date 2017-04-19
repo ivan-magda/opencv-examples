@@ -20,13 +20,28 @@
  * THE SOFTWARE.
  */
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+#import <CoreMedia/CoreMedia.h>
+#import <AVFoundation/AVFoundation.h>
 
 // File includes:
-#import "EAGLView.h"
+#include "BGRAVideoFrame.h"
+#include "CameraCalibration.hpp"
 
-@interface ViewController : UIViewController
+@protocol VideoSourceDelegate<NSObject>
 
-@property (weak, nonatomic) IBOutlet EAGLView *glview;
+-(void)frameReady:(BGRAVideoFrame) frame;
+
+@end
+
+@interface VideoSource : NSObject<AVCaptureVideoDataOutputSampleBufferDelegate>
+
+@property (nonatomic, retain) AVCaptureSession        * captureSession;
+@property (nonatomic, retain) AVCaptureDeviceInput    * deviceInput;
+@property (nonatomic, retain) id<VideoSourceDelegate>   delegate;
+
+- (bool) startWithDevicePosition:(AVCaptureDevicePosition)devicePosition;
+- (CameraCalibration) getCalibration;
+- (CGSize) getFrameSize;
 
 @end

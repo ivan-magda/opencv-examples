@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2016 Ivan Magda
+ * Copyright (c) 2017 Ivan Magda
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -20,20 +20,86 @@
  * THE SOFTWARE.
  */
 
+// File includes:
 #import "ViewController.h"
+#import "VideoSource.h"
+#import "MarkerDetector.hpp"
+#import "SimpleVisualizationController.h"
 
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
+@interface ViewController() <VideoSourceDelegate>
 
-@interface ViewController ()
+@property (strong, nonatomic) VideoSource * videoSource;
+@property (nonatomic) MarkerDetector * markerDetector;
+@property (strong, nonatomic) SimpleVisualizationController * visualizationController;
 
 @end
 
 @implementation ViewController
+@synthesize glview, videoSource, markerDetector, visualizationController;
+
+#pragma mark - View lifecycle
 
 - (void)viewDidLoad {
   [super viewDidLoad];
+  
+  // Do any additional setup after loading the view, typically from a nib.
+  self.videoSource = [[VideoSource alloc] init];
+  self.videoSource.delegate = self;
+  
+  self.markerDetector = new MarkerDetector([self.videoSource getCalibration]);
+  [self.videoSource startWithDevicePosition:AVCaptureDevicePositionBack];
+}
+
+- (void)viewDidUnload {
+  // Release any retained subviews of the main view.
+  [self setGlview:nil];
+  [super viewDidUnload];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+  [self.glview initContext];
+  
+  CGSize frameSize = [self.videoSource getFrameSize];
+  CameraCalibration camCalib = [self.videoSource getCalibration];
+  
+  frameSize = CGSizeMake(640, 480);
+  
+  self.visualizationController = [[SimpleVisualizationController alloc] initWithGLView:self.glview
+                                                                           calibration:camCalib
+                                                                             frameSize:frameSize];
+  
+  [super viewWillAppear:animated];
+}
+
+- (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
+  // Important notice:
+  // Since the logical interface orientation differs from coordinate system of video frame
+  // We force the interface orientation to landscape right for simplicity.
+  // This orientation has one-to-one coordinates mapping from frame buffer to view.
+  // So we don't have to worry about inconsistent AR.
+  return interfaceOrientation == UIInterfaceOrientationLandscapeRight;
+}
+
+- (void) dealloc {
+  delete self.markerDetector;
+}
+
+#pragma mark - VideoSourceDelegate
+
+-(void)frameReady:(BGRAVideoFrame) frame {
+  // Start upload new frame to video memory in main thread
+  dispatch_sync(dispatch_get_main_queue(), ^{
+    [self.visualizationController updateBackground:frame];
+  });
+  
+  // And perform processing in current thread
+  self.markerDetector->processFrame(frame);
+  
+  // When it's done we query rendering from main thread
+  dispatch_async(dispatch_get_main_queue(), ^{
+    [self.visualizationController setTransformationList:(self.markerDetector->getTransformations)()];
+    [self.visualizationController drawFrame];
+  });
 }
 
 @end

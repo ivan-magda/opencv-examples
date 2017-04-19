@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:iOS-AR.xcodeproj">
+      location = "self:/Users/ivanmagda/Programming/diploma-work/code-Ed2_OpenCV31/Chapter2_iPhoneAR/Example_MarkerBasedAR/iOS-AR.xcodeproj">
    </FileRef>
 </Workspace>
