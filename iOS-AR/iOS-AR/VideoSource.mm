@@ -100,7 +100,7 @@
   return nil;
 }
 
-- (void) addRawViewOutput {
+- (void)addRawViewOutput {
   /*We setupt the output*/
   AVCaptureVideoDataOutput *captureOutput = [[AVCaptureVideoDataOutput alloc] init];
   
