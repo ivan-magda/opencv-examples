@@ -39,15 +39,18 @@
 }
 
 //The EAGL view is stored in the nib file. When it's unarchived it's sent -initWithCoder:.
-- (id)initWithCoder:(NSCoder*)coder {
+- (id)initWithCoder:(NSCoder *)coder {
   if (self = [super initWithCoder: coder]) {
-    CAEAGLLayer *eaglLayer = (CAEAGLLayer *)self.layer;
-    
+    CAEAGLLayer * eaglLayer = (CAEAGLLayer *)self.layer;
     eaglLayer.opaque = TRUE;
-    eaglLayer.drawableProperties = [NSDictionary dictionaryWithObjectsAndKeys:
-                                    [NSNumber numberWithBool:FALSE], kEAGLDrawablePropertyRetainedBacking,
-                                    kEAGLColorFormatRGBA8, kEAGLDrawablePropertyColorFormat,
-                                    nil];
+    
+    NSDictionary * options = [NSDictionary dictionaryWithObjectsAndKeys:
+        [NSNumber numberWithBool: FALSE],
+        kEAGLDrawablePropertyRetainedBacking,
+        kEAGLColorFormatRGBA8,
+        kEAGLDrawablePropertyColorFormat, nil
+    ];
+    eaglLayer.drawableProperties = options;
     
     [self initContext];
   }
@@ -169,6 +172,5 @@
   [self setContext:aContext];
   [self setFramebuffer];
 }
-
 
 @end
