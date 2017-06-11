@@ -25,7 +25,9 @@
 #import <OpenGLES/ES1/glext.h>
 #import <OpenGLES/ES2/gl.h>
 #import <OpenGLES/ES2/glext.h>
+#import <GLKit/GLKit.h>
 #import <iostream>
+#import <math.h>
 
 @implementation SimpleVisualizationController
 
@@ -191,10 +193,10 @@
     0.5f,   0.5f,
   };
   const GLubyte squareColors[] = {
-    255, 255,   0, 255,
-    0,   255, 255, 255,
+    122, 0,   0, 55,
+    0,   155, 0, 95,
     0,     0,   0,   0,
-    255,   0, 255, 255,
+    185,   0, 25, 15,
   };
   
   for (size_t transformationIndex=0; transformationIndex<m_transformations.size(); transformationIndex++) {

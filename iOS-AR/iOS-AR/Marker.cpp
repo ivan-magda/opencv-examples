@@ -33,9 +33,9 @@ cv::Mat Marker::rotate(cv::Mat in) {
   cv::Mat out;
   in.copyTo(out);
   
-  for (int i=0;i<in.rows;i++) {
-    for (int j=0;j<in.cols;j++) {
-      out.at<uchar>(i,j)=in.at<uchar>(in.cols-j-1,i);
+  for (int i = 0; i < in.rows; i++) {
+    for (int j = 0; j < in.cols; j++) {
+      out.at<uchar>(i,j) = in.at<uchar>(in.cols-j-1,i);
     }
   }
   
@@ -50,7 +50,7 @@ int Marker::hammDistMarker(cv::Mat bits) {
     {0,1,1,1,0}
   };
   
-  int dist=0;
+  int dist = 0;
   
   for (int y = 0; y < 5; y++) {
     int minSum = 1e5; //hamming distance to each possible word
@@ -59,7 +59,7 @@ int Marker::hammDistMarker(cv::Mat bits) {
       int sum = 0;
       //now, count
       for (int x = 0; x < 5; x++) {
-        sum += bits.at<uchar>(y,x) == ids[p][x] ? 0 : 1;
+        sum += bits.at<uchar>(y, x) == ids[p][x] ? 0 : 1;
       }
       
       if (minSum > sum)
@@ -74,19 +74,19 @@ int Marker::hammDistMarker(cv::Mat bits) {
 }
 
 int Marker::mat2id(const cv::Mat &bits) {
-  int val=0;
+  int val = 0;
   
-  for (int y=0;y<5;y++) {
-    val<<=1;
-    if ( bits.at<uchar>(y,1)) val|=1;
-    val<<=1;
-    if ( bits.at<uchar>(y,3)) val|=1;
+  for (int y = 0; y < 5; y++) {
+    val <<= 1;
+    if (bits.at<uchar>(y, 1)) val |= 1;
+    val <<= 1;
+    if (bits.at<uchar>(y, 3)) val |= 1;
   }
   
   return val;
 }
 
-int Marker::getMarkerId(cv::Mat &markerImage,int &nRotations) {
+int Marker::getMarkerId(cv::Mat &markerImage, int &nRotations) {
   assert(markerImage.rows == markerImage.cols);
   assert(markerImage.type() == CV_8UC1);
   

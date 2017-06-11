@@ -294,7 +294,7 @@ void MarkerDetector::recognizeMarkers(const cv::Mat& grayscale,
   if (goodMarkers.size() > 0) {
     std::vector<cv::Point2f> preciseCorners(4 * goodMarkers.size());
     
-    for (size_t i=0; i<goodMarkers.size(); i++) {
+    for (size_t i = 0; i < goodMarkers.size(); i++) {
       const Marker& marker = goodMarkers[i];
       
       for (int c = 0; c <4; c++) {
@@ -302,17 +302,19 @@ void MarkerDetector::recognizeMarkers(const cv::Mat& grayscale,
       }
     }
     
-    cv::TermCriteria termCriteria = cv::TermCriteria(cv::TermCriteria::MAX_ITER | cv::TermCriteria::EPS,
-                                                     30,
-                                                     0.01);
+    cv::TermCriteria termCriteria = cv::TermCriteria(
+        cv::TermCriteria::MAX_ITER | cv::TermCriteria::EPS,
+        30,
+        0.01
+    );
     cv::cornerSubPix(grayscale, preciseCorners, cvSize(5,5), cvSize(-1,-1),
                      termCriteria);
     
     // Copy refined corners position back to markers
-    for (size_t i=0; i<goodMarkers.size(); i++) {
+    for (size_t i = 0; i < goodMarkers.size(); i++) {
       Marker& marker = goodMarkers[i];
       
-      for (int c=0;c<4;c++) {
+      for (int c = 0; c < 4; c++) {
         marker.points[c] = preciseCorners[i*4 + c];
       }
     }
