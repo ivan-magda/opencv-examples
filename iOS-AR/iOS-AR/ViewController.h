@@ -22,7 +22,6 @@
 
 #import <UIKit/UIKit.h>
 
-// File includes:
 #import "EAGLView.h"
 
 @interface ViewController : UIViewController

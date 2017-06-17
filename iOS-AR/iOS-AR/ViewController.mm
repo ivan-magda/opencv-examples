@@ -19,8 +19,6 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-
-// File includes:
 #import "ViewController.h"
 #import "VideoSource.h"
 #import "MarkerDetector.hpp"
@@ -35,23 +33,20 @@
 @end
 
 @implementation ViewController
-@synthesize glview, videoSource, markerDetector, visualizationController;
 
 #pragma mark - View lifecycle
 
 - (void)viewDidLoad {
   [super viewDidLoad];
   
-  // Do any additional setup after loading the view, typically from a nib.
-  self.videoSource = [[VideoSource alloc] init];
-  self.videoSource.delegate = self;
+  _videoSource = [VideoSource new];
+  _videoSource.delegate = self;
   
-  self.markerDetector = new MarkerDetector([self.videoSource getCalibration]);
+  _markerDetector = new MarkerDetector([self.videoSource getCalibration]);
   [self.videoSource startWithDevicePosition:AVCaptureDevicePositionBack];
 }
 
 - (void)viewDidUnload {
-  // Release any retained subviews of the main view.
   [self setGlview:nil];
   [super viewDidUnload];
 }
@@ -61,12 +56,12 @@
   
   CGSize frameSize = [self.videoSource getFrameSize];
   CameraCalibration camCalib = [self.videoSource getCalibration];
-  
   frameSize = CGSizeMake(640, 480);
   
-  self.visualizationController = [[SimpleVisualizationController alloc]initWithGLView: self.glview
-                                                                          calibration: camCalib
-                                                                            frameSize: frameSize];
+  self.visualizationController = [[SimpleVisualizationController alloc]
+                                  initWithGLView: _glview
+                                  calibration: camCalib
+                                  frameSize: frameSize];
   
   [super viewWillAppear:animated];
 }
@@ -80,7 +75,7 @@
   return interfaceOrientation == UIInterfaceOrientationLandscapeRight;
 }
 
-- (void) dealloc {
+- (void)dealloc {
   delete self.markerDetector;
 }
 
