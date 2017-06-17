@@ -20,18 +20,16 @@
  * THE SOFTWARE.
  */
 
-// Standard includes:
 #include <iostream>
 #include <sstream>
 
-// File includes:
 #include "MarkerDetector.hpp"
 #include "Marker.hpp"
 #include "TinyLA.hpp"
 #include "DebugHelpers.hpp"
 
 MarkerDetector::MarkerDetector(CameraCalibration calibration)
-: m_minContourLengthAllowed(100), markerSize(100,100) {
+: m_minContourLengthAllowed(100), markerSize(100, 100) {
   cv::Mat(3,3, CV_32F, const_cast<float*>(&calibration.getIntrinsic().data[0])).copyTo(camMatrix);
   cv::Mat(4,1, CV_32F, const_cast<float*>(&calibration.getDistorsion().data[0])).copyTo(distCoeff);
   
@@ -59,7 +57,7 @@ void MarkerDetector::processFrame(const BGRAVideoFrame& frame) {
   findMarkers(frame, markers);
   
   m_transformations.clear();
-  for (size_t i=0; i<markers.size(); i++) {
+  for(size_t i = 0; i < markers.size(); i++) {
     m_transformations.push_back(markers[i].transformation);
   }
 }
@@ -68,9 +66,7 @@ const std::vector<Transformation>& MarkerDetector::getTransformations() const {
   return m_transformations;
 }
 
-
-bool MarkerDetector::findMarkers(const BGRAVideoFrame& frame,
-                                 std::vector<Marker>& detectedMarkers) {
+bool MarkerDetector::findMarkers(const BGRAVideoFrame& frame, std::vector<Marker>& detectedMarkers) {
   cv::Mat bgraMat((unsigned int)frame.height, (unsigned int)frame.width, CV_8UC4,
                   frame.data, frame.stride);
   
@@ -92,7 +88,7 @@ bool MarkerDetector::findMarkers(const BGRAVideoFrame& frame,
   // Calculate their poses
   estimatePosition(detectedMarkers);
   
-  //sort by id
+  // Sort by id
   std::sort(detectedMarkers.begin(), detectedMarkers.end());
   
   return false;
@@ -106,17 +102,6 @@ void MarkerDetector::prepareImage(const cv::Mat& bgraMat, cv::Mat& grayscale) co
 void MarkerDetector::performThreshold(const cv::Mat& grayscale, cv::Mat& thresholdImg) const {
   cv::threshold(grayscale, thresholdImg, 127, 255, cv::THRESH_BINARY_INV);
   
-  /*
-   cv::adaptiveThreshold(grayscale,   // Input image
-   thresholdImg,// Result binary image
-   255,         //
-   cv::ADAPTIVE_THRESH_GAUSSIAN_C, //
-   cv::THRESH_BINARY_INV, //
-   7, //
-   7  //
-   );
-   */
-  
 #ifdef SHOW_DEBUG_IMAGES
   cv::showAndSave("Threshold image", thresholdImg);
 #endif
@@ -129,7 +114,7 @@ void MarkerDetector::findContours(cv::Mat& thresholdImg, ContoursVector& contour
   
   contours.clear();
   
-  for (size_t i = 0; i < allContours.size(); i++) {
+  for(size_t i = 0; i < allContours.size(); i++) {
     int contourSize = (unsigned int) allContours[i].size();
     if (contourSize > minContourPointsAllowed) {
       contours.push_back(allContours[i]);
@@ -146,8 +131,7 @@ void MarkerDetector::findContours(cv::Mat& thresholdImg, ContoursVector& contour
 #endif
 }
 
-void MarkerDetector::findCandidates(const ContoursVector& contours,
-                                    std::vector<Marker>& detectedMarkers) {
+void MarkerDetector::findCandidates(const ContoursVector& contours, std::vector<Marker>& detectedMarkers) {
   std::vector<cv::Point> approxCurve;
   std::vector<Marker> possibleMarkers;
   
@@ -158,12 +142,10 @@ void MarkerDetector::findCandidates(const ContoursVector& contours,
     cv::approxPolyDP(contours[i], approxCurve, eps, true);
     
     // We interested only in polygons that contains only four points
-    if (approxCurve.size() != 4)
-      continue;
+    if (approxCurve.size() != 4) continue;
     
     // And they have to be convex
-    if (!cv::isContourConvex(approxCurve))
-      continue;
+    if (!cv::isContourConvex(approxCurve)) continue;
     
     // Ensure that the distance between consecutive points is large enough
     float minDist = std::numeric_limits<float>::max();
@@ -175,14 +157,14 @@ void MarkerDetector::findCandidates(const ContoursVector& contours,
     }
     
     // Check that distance is not very small
-    if (minDist < m_minContourLengthAllowed)
-      continue;
+    if (minDist < m_minContourLengthAllowed) continue;
     
     // All tests are passed. Save marker candidate:
     Marker m;
     
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < 4; i++) {
       m.points.push_back(cv::Point2f(approxCurve[i].x,approxCurve[i].y));
+    }
     
     // Sort the points in anti-clockwise order
     // Trace a line between the first and second point.
@@ -192,8 +174,10 @@ void MarkerDetector::findCandidates(const ContoursVector& contours,
     
     double o = (v1.x * v2.y) - (v1.y * v2.x);
     
-    if (o < 0.0)		 //if the third point is in the left side, then sort in anti-clockwise order
+    //if the third point is in the left side, then sort in anti-clockwise order
+    if (o < 0.0) {
       std::swap(m.points[1], m.points[3]);
+    }
     
     possibleMarkers.push_back(m);
   }
@@ -202,13 +186,13 @@ void MarkerDetector::findCandidates(const ContoursVector& contours,
   // Remove these elements which corners are too close to each other.
   // First detect candidates for removal:
   std::vector< std::pair<int,int> > tooNearCandidates;
+  
   for (size_t i = 0; i < possibleMarkers.size(); i++) {
     const Marker& m1 = possibleMarkers[i];
     
     // calculate the average distance of each corner to the nearest corner of the other marker candidate
     for (size_t j = i + 1; j < possibleMarkers.size(); j++) {
       const Marker& m2 = possibleMarkers[j];
-      
       float distSquared = 0;
       
       for (int c = 0; c < 4; c++) {
@@ -232,10 +216,11 @@ void MarkerDetector::findCandidates(const ContoursVector& contours,
     float p2 = perimeter(possibleMarkers[tooNearCandidates[i].second].points);
     
     size_t removalIndex;
-    if (p1 > p2)
+    if (p1 > p2) {
       removalIndex = tooNearCandidates[i].second;
-    else
+    } else {
       removalIndex = tooNearCandidates[i].first;
+    }
     
     removalMask[removalIndex] = true;
   }
@@ -243,13 +228,13 @@ void MarkerDetector::findCandidates(const ContoursVector& contours,
   // Return candidates
   detectedMarkers.clear();
   for (size_t i = 0; i < possibleMarkers.size(); i++) {
-    if (!removalMask[i])
+    if (!removalMask[i]) {
       detectedMarkers.push_back(possibleMarkers[i]);
+    }
   }
 }
 
-void MarkerDetector::recognizeMarkers(const cv::Mat& grayscale,
-                                      std::vector<Marker>& detectedMarkers) {
+void MarkerDetector::recognizeMarkers(const cv::Mat& grayscale, std::vector<Marker>& detectedMarkers) {
   std::vector<Marker> goodMarkers;
   
   // Identify the markers
@@ -258,12 +243,10 @@ void MarkerDetector::recognizeMarkers(const cv::Mat& grayscale,
     
     // Find the perspective transformation that brings current marker
     // to rectangular form.
-    cv::Mat markerTransform = cv::getPerspectiveTransform(marker.points,
-                                                          m_markerCorners2d);
+    cv::Mat markerTransform = cv::getPerspectiveTransform(marker.points, m_markerCorners2d);
     
     // Transform image to get a canonical marker image
-    cv::warpPerspective(grayscale, canonicalMarkerImage,  markerTransform,
-                        markerSize);
+    cv::warpPerspective(grayscale, canonicalMarkerImage,  markerTransform, markerSize);
     
 #ifdef SHOW_DEBUG_IMAGES
     {
@@ -278,6 +261,7 @@ void MarkerDetector::recognizeMarkers(const cv::Mat& grayscale,
     
     int nRotations;
     int id = Marker::getMarkerId(canonicalMarkerImage, nRotations);
+    
     if (id !=- 1) {
       marker.id = id;
       // sort the points so that they are always in the same order no matter
@@ -307,8 +291,7 @@ void MarkerDetector::recognizeMarkers(const cv::Mat& grayscale,
         30,
         0.01
     );
-    cv::cornerSubPix(grayscale, preciseCorners, cvSize(5,5), cvSize(-1,-1),
-                     termCriteria);
+    cv::cornerSubPix(grayscale, preciseCorners, cvSize(5,5), cvSize(-1,-1), termCriteria);
     
     // Copy refined corners position back to markers
     for (size_t i = 0; i < goodMarkers.size(); i++) {
@@ -335,7 +318,6 @@ void MarkerDetector::recognizeMarkers(const cv::Mat& grayscale,
   detectedMarkers = goodMarkers;
 }
 
-
 void MarkerDetector::estimatePosition(std::vector<Marker>& detectedMarkers) {
   for (size_t i = 0; i < detectedMarkers.size(); i++) {
     Marker& m = detectedMarkers[i];
@@ -343,6 +325,7 @@ void MarkerDetector::estimatePosition(std::vector<Marker>& detectedMarkers) {
     cv::Mat Rvec;
     cv::Mat_<float> Tvec;
     cv::Mat raux, taux;
+    
     cv::solvePnP(m_markerCorners3d, m.points, camMatrix, distCoeff, raux, taux);
     raux.convertTo(Rvec, CV_32F);
     taux.convertTo(Tvec, CV_32F);
@@ -358,7 +341,8 @@ void MarkerDetector::estimatePosition(std::vector<Marker>& detectedMarkers) {
       m.transformation.t().data[col] = Tvec(col); // Copy translation component
     }
     
-    // Since solvePnP finds camera location, w.r.t to marker pose, to get marker pose w.r.t to the camera we invert it.
+    // Since solvePnP finds camera location, w.r.t to marker pose,
+    // to get marker pose w.r.t to the camera we invert it.
     m.transformation = m.transformation.getInverted();
   }
 }

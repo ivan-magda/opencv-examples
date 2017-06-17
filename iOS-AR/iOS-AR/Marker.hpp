@@ -23,12 +23,10 @@
 #ifndef iOS_AR_Marker_hpp
 #define iOS_AR_Marker_hpp
 
-// Standard includes:
 #include <vector>
 #include <iostream>
 #include <opencv2/opencv.hpp>
 
-// File includes:
 #include "GeometryTypes.hpp"
 
 /**
@@ -38,13 +36,13 @@ class Marker {
 public:
   Marker();
   
-  friend bool operator<(const Marker &M1,const Marker&M2);
-  friend std::ostream & operator<<(std::ostream &str,const Marker &M);
+  friend bool operator<(const Marker &M1, const Marker&M2);
+  friend std::ostream & operator<<(std::ostream &str, const Marker &M);
 
-  static cv::Mat rotate(cv::Mat  in);
+  static cv::Mat rotate(cv::Mat in);
   static int hammDistMarker(cv::Mat bits);
   static int mat2id(const cv::Mat &bits);
-  static int getMarkerId(cv::Mat &in,int &nRotations);
+  static int getMarkerId(cv::Mat &in, int &nRotations);
   
 public:
   

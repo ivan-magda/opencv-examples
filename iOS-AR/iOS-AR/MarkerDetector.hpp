@@ -23,23 +23,20 @@
 #ifndef iOS_AR_MarkerDetector_hpp
 #define iOS_AR_MarkerDetector_hpp
 
-// Standard includes:
 #include <vector>
 #include <opencv2/opencv.hpp>
 
-// File includes:
 #include "BGRAVideoFrame.h"
 #include "CameraCalibration.hpp"
 
-// Forward declaration:
 class Marker;
 
 /**
- * A top-level class that encapsulate marker detector algorithm
+ * A top-level class that encapsulate marker detector algorithm.
  */
 class MarkerDetector {
 public:
-  typedef std::vector<cv::Point>    PointsVector;
+  typedef std::vector<cv::Point> PointsVector;
   typedef std::vector<PointsVector> ContoursVector;
   
   
