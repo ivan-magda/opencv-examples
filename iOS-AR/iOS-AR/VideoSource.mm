@@ -24,20 +24,15 @@
 #import <CoreVideo/CoreVideo.h>
 #import <UIKit/UIKit.h>
 
-// File includes:
 #import "VideoSource.h"
 
 @implementation VideoSource
 
-@synthesize captureSession;
-@synthesize delegate;
-@synthesize deviceInput;
-
 #pragma mark - Memory management
 
 - (id)init {
-  if ((self = [super init])) {
-    AVCaptureSession * capSession = [[AVCaptureSession alloc] init];
+  if (self = [super init]) {
+    AVCaptureSession * capSession = [AVCaptureSession new];
     
     if ([capSession canSetSessionPreset:AVCaptureSessionPreset640x480]) {
       [capSession setSessionPreset:AVCaptureSessionPreset640x480];
@@ -47,25 +42,28 @@
       NSLog(@"Set capture session preset AVCaptureSessionPresetLow");
     }
     
-    self.captureSession = capSession;
+    _captureSession = capSession;
   }
+  
   return self;
 }
 
-- (CameraCalibration) getCalibration {
+- (CameraCalibration)getCalibration {
   // Returns calibratoin data for iPad 2
   // Todo: Add parameters for the rest
   return CameraCalibration(6.24860291e+02 * (640./352.), 6.24860291e+02 * (480./288.), 640 * 0.5f, 480 * 0.5f);
 }
 
-- (CGSize) getFrameSize {
-  if (![captureSession isRunning])
+- (CGSize)getFrameSize {
+  if (![self.captureSession isRunning]) {
     NSLog(@"Capture session is not running, getFrameSize will return invalid valies");
+  }
   
-  NSArray *ports = [deviceInput ports];
+  NSArray *ports = [self.deviceInput ports];
   AVCaptureInputPort *usePort = nil;
-  for ( AVCaptureInputPort *port in ports ) {
-    if ( usePort == nil || [port.mediaType isEqualToString:AVMediaTypeVideo] ) {
+  
+  for (AVCaptureInputPort *port in ports ) {
+    if (usePort == nil || [port.mediaType isEqualToString:AVMediaTypeVideo] ) {
       usePort = port;
     }
   }
@@ -82,13 +80,12 @@
 
 - (void)dealloc {
   [self.captureSession stopRunning];
-  
   self.captureSession = nil;
 }
 
 #pragma mark Capture Session Configuration
 
-- (AVCaptureDevice *) cameraWithPosition:(AVCaptureDevicePosition) position {
+- (AVCaptureDevice *)cameraWithPosition:(AVCaptureDevicePosition) position {
   NSArray *devices = [AVCaptureDevice devicesWithMediaType:AVMediaTypeVideo];
   
   for (AVCaptureDevice *device in devices) {
@@ -102,7 +99,7 @@
 
 - (void)addRawViewOutput {
   /*We setupt the output*/
-  AVCaptureVideoDataOutput *captureOutput = [[AVCaptureVideoDataOutput alloc] init];
+  AVCaptureVideoDataOutput *captureOutput = [AVCaptureVideoDataOutput new];
   
   /*While a frame is processes in -captureOutput:didOutputSampleBuffer:fromConnection: delegate methods no other frames are added in the queue.
    If you don't want this behaviour set the property to NO */
@@ -115,61 +112,55 @@
   //captureOutput.minFrameDuration = CMTimeMake(1, 10);
   
   /*We create a serial queue to handle the processing of our frames*/
-  dispatch_queue_t queue;
-  queue = dispatch_queue_create("com.ivanmagda.iOS-AR.cameraQueue", NULL);
+  dispatch_queue_t queue = dispatch_queue_create("com.ivanmagda.iOS-AR.cameraQueue", nil);
   [captureOutput setSampleBufferDelegate:self queue:queue];
   
   // Set the video output to store frame in BGRA (It is supposed to be faster)
   NSString* key = (NSString*)kCVPixelBufferPixelFormatTypeKey;
   NSNumber* value = [NSNumber numberWithUnsignedInt:kCVPixelFormatType_32BGRA];
-  NSDictionary* videoSettings = [NSDictionary dictionaryWithObject:value forKey:key];
+  NSDictionary* videoSettings = @{key: value};
   [captureOutput setVideoSettings:videoSettings];
   
   // Register an output
   [self.captureSession addOutput:captureOutput];
 }
 
-- (bool) startWithDevicePosition:(AVCaptureDevicePosition)devicePosition {
+- (bool)startWithDevicePosition:(AVCaptureDevicePosition)devicePosition {
   AVCaptureDevice *videoDevice = [self cameraWithPosition:devicePosition];
   
-  if (!videoDevice)
-    return FALSE;
+  if (!videoDevice) return NO;
   
-  
-  NSError *error;
-  
+  NSError *error = nil;
   AVCaptureDeviceInput *videoIn = [AVCaptureDeviceInput deviceInputWithDevice:videoDevice
                                                                         error:&error];
-  self.deviceInput = videoIn;
+  _deviceInput = videoIn;
   
-  if (nil != videoIn) {
+  if (videoIn != nil) {
     if ([[self captureSession] canAddInput:videoIn]) {
       [[self captureSession] addInput:videoIn];
     } else {
       NSLog(@"Couldn't add video input");
-      return FALSE;
+      return NO;
     }
   } else {
-    NSLog(@"Couldn't create video input: %@", [error localizedDescription]);
-    return FALSE;
+    NSLog(@"Couldn't create video input: %@", error.localizedDescription);
+    return NO;
   }
   
   
   [self addRawViewOutput];
-  [captureSession startRunning];
+  [self.captureSession startRunning];
   
-  return TRUE;
+  return YES;
 }
 
 #pragma mark - AVCaptureSession delegate
 
-- (void)captureOutput:(AVCaptureOutput *)captureOutput
-didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
-       fromConnection:(AVCaptureConnection *)connection {
+- (void)captureOutput:(AVCaptureOutput *)captureOutput didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer fromConnection:(AVCaptureConnection *)connection {
   CVImageBufferRef imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
   
   /*Lock the image buffer*/
-  CVPixelBufferLockBaseAddress(imageBuffer,0);
+  CVPixelBufferLockBaseAddress(imageBuffer, 0);
   
   /*Get information about the image*/
   uint8_t *baseAddress = (uint8_t *)CVPixelBufferGetBaseAddress(imageBuffer);
@@ -178,10 +169,10 @@ didOutputSampleBuffer:(CMSampleBufferRef)sampleBuffer
   size_t stride = CVPixelBufferGetBytesPerRow(imageBuffer);
   
   BGRAVideoFrame frame = {width, height, stride, baseAddress};
-  [delegate frameReady:frame];
+  [self.delegate frameReady:frame];
   
   /*We unlock the  image buffer*/
-  CVPixelBufferUnlockBaseAddress(imageBuffer,0);
+  CVPixelBufferUnlockBaseAddress(imageBuffer, 0);
 }
 
 @end

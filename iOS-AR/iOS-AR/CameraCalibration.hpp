@@ -23,15 +23,12 @@
 #ifndef iOS_AR_CameraCalibration_hpp
 #define iOS_AR_CameraCalibration_hpp
 
-// File includes:
 #include "GeometryTypes.hpp"
 
 /**
  * A camera calibraiton class that stores intrinsic matrix
  * and distorsion vector.
  */
-
-
 class CameraCalibration {
 public:
   CameraCalibration();

@@ -25,7 +25,9 @@
 
 #include <cstddef>
 
-// A helper struct presenting interleaved BGRA image in memory.
+/**
+ * A helper struct presenting interleaved BGRA image in memory.
+ */
 struct BGRAVideoFrame {
   size_t width;
   size_t height;
@@ -33,6 +35,5 @@ struct BGRAVideoFrame {
   
   unsigned char * data;
 };
-
 
 #endif

@@ -24,7 +24,6 @@
 #import <CoreMedia/CoreMedia.h>
 #import <AVFoundation/AVFoundation.h>
 
-// File includes:
 #include "BGRAVideoFrame.h"
 #include "CameraCalibration.hpp"
 
@@ -36,12 +35,12 @@
 
 @interface VideoSource : NSObject<AVCaptureVideoDataOutputSampleBufferDelegate>
 
-@property (nonatomic, retain) AVCaptureSession        * captureSession;
-@property (nonatomic, retain) AVCaptureDeviceInput    * deviceInput;
-@property (nonatomic, retain) id<VideoSourceDelegate>   delegate;
+@property (nonatomic, retain) AVCaptureSession *captureSession;
+@property (nonatomic, retain) AVCaptureDeviceInput *deviceInput;
+@property (nonatomic, retain) id<VideoSourceDelegate> delegate;
 
-- (bool) startWithDevicePosition:(AVCaptureDevicePosition)devicePosition;
-- (CameraCalibration) getCalibration;
-- (CGSize) getFrameSize;
+- (bool)startWithDevicePosition:(AVCaptureDevicePosition) devicePosition;
+- (CameraCalibration)getCalibration;
+- (CGSize)getFrameSize;
 
 @end
