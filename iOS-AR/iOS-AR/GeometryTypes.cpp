@@ -25,9 +25,11 @@
 Matrix44 Matrix44::getTransposed() const {
   Matrix44 t;
   
-  for (int i=0;i<4; i++)
-    for (int j=0;j<4;j++)
+  for (int i = 0; i < 4; i++) {
+    for (int j = 0; j < 4; j++) {
       t.mat[i][j] = mat[j][i];
+    }
+  }
   
   return t;
 }
@@ -35,9 +37,11 @@ Matrix44 Matrix44::getTransposed() const {
 Matrix44 Matrix44::identity() {
   Matrix44 eye;
   
-  for (int i=0;i<4; i++)
-    for (int j=0;j<4;j++)
+  for (int i = 0; i < 4; i++) {
+    for (int j = 0; j < 4; j++) {
       eye.mat[i][j] = i == j ? 1 : 0;
+    }
+  }
   
   return eye;
 }
@@ -45,8 +49,8 @@ Matrix44 Matrix44::identity() {
 Matrix44 Matrix44::getInvertedRT() const {
   Matrix44 t = identity();
   
-  for (int col=0;col<3; col++) {
-    for (int row=0;row<3;row++) {
+  for (int col = 0; col < 3; col++) {
+    for (int row = 0; row < 3; row++) {
       // Transpose rotation component (inversion)
       t.mat[row][col] = mat[col][row];
     }
@@ -61,9 +65,11 @@ Matrix44 Matrix44::getInvertedRT() const {
 Matrix33 Matrix33::identity() {
   Matrix33 eye;
   
-  for (int i=0;i<3; i++)
-    for (int j=0;j<3;j++)
+  for (int i = 0; i < 3; i++) {
+    for (int j = 0; j < 3; j++) {
       eye.mat[i][j] = i == j ? 1 : 0;
+    }
+  }
   
   return eye;
 }
@@ -71,9 +77,11 @@ Matrix33 Matrix33::identity() {
 Matrix33 Matrix33::getTransposed() const {
   Matrix33 t;
   
-  for (int i=0;i<3; i++)
-    for (int j=0;j<3;j++)
+  for (int i = 0; i < 3; i++) {
+    for (int j = 0; j < 3; j++) {
       t.mat[i][j] = mat[j][i];
+    }
+  }
   
   return t;
 }
@@ -121,8 +129,8 @@ const Vector3&  Transformation::t() const {
 Matrix44 Transformation::getMat44() const {
   Matrix44 res = Matrix44::identity();
   
-  for (int col=0;col<3;col++) {
-    for (int row=0;row<3;row++) {
+  for (int col = 0; col < 3; col++) {
+    for (int row = 0; row < 3; row++) {
       // Copy rotation component
       res.mat[row][col] = m_rotation.mat[row][col];
     }
