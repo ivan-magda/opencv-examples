@@ -31,8 +31,6 @@
 
 @implementation EAGLView
 
-@synthesize context, framebufferWidth, framebufferHeight;
-
 // You must implement this method
 + (Class)layerClass {
   return [CAEAGLLayer class];
@@ -40,17 +38,12 @@
 
 //The EAGL view is stored in the nib file. When it's unarchived it's sent -initWithCoder:.
 - (id)initWithCoder:(NSCoder *)coder {
-  if (self = [super initWithCoder: coder]) {
+  if (self = [super initWithCoder:coder]) {
     CAEAGLLayer * eaglLayer = (CAEAGLLayer *)self.layer;
-    eaglLayer.opaque = TRUE;
+    eaglLayer.opaque = YES;
     
-    NSDictionary * options = [NSDictionary dictionaryWithObjectsAndKeys:
-        [NSNumber numberWithBool: FALSE],
-        kEAGLDrawablePropertyRetainedBacking,
-        kEAGLColorFormatRGBA8,
-        kEAGLDrawablePropertyColorFormat, nil
-    ];
-    eaglLayer.drawableProperties = options;
+    eaglLayer.drawableProperties = @{kEAGLDrawablePropertyRetainedBacking: @NO,
+                                     kEAGLDrawablePropertyColorFormat: kEAGLColorFormatRGBA8};
     
     [self initContext];
   }
@@ -61,23 +54,23 @@
 - (void)dealloc {
   [self deleteFramebuffer];
   
-  if ([EAGLContext currentContext] == context)
+  if ([EAGLContext currentContext] == self.context)
     [EAGLContext setCurrentContext:nil];
 }
 
 - (void)setContext:(EAGLContext *)newContext {
-  if (context != newContext) {
+  if (self.context != newContext) {
     [self deleteFramebuffer];
     
-    context = newContext;
+    _context = newContext;
     
     [EAGLContext setCurrentContext:nil];
   }
 }
 
 - (void)createFramebuffer {
-  if (context && !defaultFramebuffer) {
-    [EAGLContext setCurrentContext: context];
+  if (self.context && !defaultFramebuffer) {
+    [EAGLContext setCurrentContext: _context];
     
     // Create default framebuffer object.
     glGenFramebuffers(1, &defaultFramebuffer);
@@ -86,9 +79,9 @@
     // Create color render buffer and allocate backing store.
     glGenRenderbuffers(1, &colorRenderbuffer);
     glBindRenderbuffer(GL_RENDERBUFFER, colorRenderbuffer);
-    [context renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)self.layer];
-    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &framebufferWidth);
-    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &framebufferHeight);
+    [self.context renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)self.layer];
+    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_WIDTH, &_framebufferWidth);
+    glGetRenderbufferParameteriv(GL_RENDERBUFFER, GL_RENDERBUFFER_HEIGHT, &_framebufferHeight);
     
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, colorRenderbuffer);
     
@@ -96,7 +89,7 @@
     glGenRenderbuffers(1, &depthRenderbuffer);
     glBindRenderbuffer(GL_RENDERBUFFER, depthRenderbuffer);
     
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, framebufferWidth, framebufferHeight);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, _framebufferWidth, _framebufferHeight);
     
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthRenderbuffer);
     
@@ -106,8 +99,8 @@
 }
 
 - (void)deleteFramebuffer {
-  if (context) {
-    [EAGLContext setCurrentContext:context];
+  if (self.context) {
+    [EAGLContext setCurrentContext:_context];
     
     if (defaultFramebuffer) {
       glDeleteFramebuffers(1, &defaultFramebuffer);
@@ -129,14 +122,14 @@
 }
 
 - (void)setFramebuffer {
-  if (context) {
-    [EAGLContext setCurrentContext:context];
+  if (self.context) {
+    [EAGLContext setCurrentContext:_context];
     
     if (!defaultFramebuffer)
       [self createFramebuffer];
     
     glBindFramebuffer(GL_FRAMEBUFFER, defaultFramebuffer);
-    glViewport(0, 0, framebufferWidth, framebufferHeight);
+    glViewport(0, 0, _framebufferWidth, _framebufferHeight);
     
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
   }
@@ -145,12 +138,12 @@
 - (BOOL)presentFramebuffer {
   BOOL success = FALSE;
   
-  if (context) {
-    [EAGLContext setCurrentContext:context];
+  if (self.context) {
+    [EAGLContext setCurrentContext:_context];
     
     glBindRenderbuffer(GL_RENDERBUFFER, colorRenderbuffer);
     
-    success = [context presentRenderbuffer:GL_RENDERBUFFER];
+    success = [self.context presentRenderbuffer:GL_RENDERBUFFER];
   }
   
   return success;
