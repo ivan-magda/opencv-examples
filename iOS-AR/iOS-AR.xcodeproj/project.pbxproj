@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		7533C63C1EA6F073002C4294 /* opencv2.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8A8BD08C15E4DFE300B9E08E /* opencv2.framework */; };
+		75A87A8F1EF9132A00EF9641 /* ARKeyboard.m in Sources */ = {isa = PBXBuildFile; fileRef = 75A87A8E1EF9132A00EF9641 /* ARKeyboard.m */; };
+		75A87A911EF9157100EF9641 /* Keyboard.xib in Resources */ = {isa = PBXBuildFile; fileRef = 75A87A901EF9157100EF9641 /* Keyboard.xib */; };
+		75A87A971EF93A0D00EF9641 /* MarkerDetectorUtils.mm in Sources */ = {isa = PBXBuildFile; fileRef = 75A87A961EF93A0D00EF9641 /* MarkerDetectorUtils.mm */; };
 		75C563341EA6ECB400B3E974 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 75C563331EA6ECB400B3E974 /* LaunchScreen.storyboard */; };
 		8A205172150F8D2000E80270 /* Marker.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 8A205171150F8D2000E80270 /* Marker.cpp */; };
 		8A20518D1510A35F00E80270 /* EAGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = 8A20518C1510A35F00E80270 /* EAGLView.m */; };
@@ -35,6 +38,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		75A87A8D1EF9132A00EF9641 /* ARKeyboard.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ARKeyboard.h; sourceTree = "<group>"; };
+		75A87A8E1EF9132A00EF9641 /* ARKeyboard.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ARKeyboard.m; sourceTree = "<group>"; };
+		75A87A901EF9157100EF9641 /* Keyboard.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = Keyboard.xib; sourceTree = "<group>"; };
+		75A87A951EF93A0D00EF9641 /* MarkerDetectorUtils.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MarkerDetectorUtils.h; sourceTree = "<group>"; };
+		75A87A961EF93A0D00EF9641 /* MarkerDetectorUtils.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = MarkerDetectorUtils.mm; sourceTree = "<group>"; };
 		75C563331EA6ECB400B3E974 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		8A20516E150E9B4D00E80270 /* BGRAVideoFrame.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BGRAVideoFrame.h; sourceTree = "<group>"; };
 		8A205170150F8D1800E80270 /* Marker.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Marker.hpp; sourceTree = "<group>"; };
@@ -131,6 +139,7 @@
 				8ADAC44A1504BC61008B5F2A /* MainStoryboard_iPhone.storyboard */,
 				8ADAC44D1504BC61008B5F2A /* MainStoryboard_iPad.storyboard */,
 				75C563331EA6ECB400B3E974 /* LaunchScreen.storyboard */,
+				75A87A901EF9157100EF9641 /* Keyboard.xib */,
 			);
 			name = Assets;
 			sourceTree = "<group>";
@@ -142,6 +151,8 @@
 				8A20518C1510A35F00E80270 /* EAGLView.m */,
 				8A2051961510BCB900E80270 /* SimpleVisualizationController.h */,
 				8A2051971510BCB900E80270 /* SimpleVisualizationController.mm */,
+				75A87A8D1EF9132A00EF9641 /* ARKeyboard.h */,
+				75A87A8E1EF9132A00EF9641 /* ARKeyboard.m */,
 			);
 			name = Rendering;
 			sourceTree = "<group>";
@@ -156,6 +167,8 @@
 				8A205171150F8D2000E80270 /* Marker.cpp */,
 				8A28CB2315249CDA0049925A /* TinyLA.hpp */,
 				8A28CB2515249CEA0049925A /* TinyLA.cpp */,
+				75A87A951EF93A0D00EF9641 /* MarkerDetectorUtils.h */,
+				75A87A961EF93A0D00EF9641 /* MarkerDetectorUtils.mm */,
 			);
 			name = MarkerDetector;
 			sourceTree = "<group>";
@@ -289,6 +302,7 @@
 			files = (
 				8ADAC4431504BC61008B5F2A /* InfoPlist.strings in Resources */,
 				75C563341EA6ECB400B3E974 /* LaunchScreen.storyboard in Resources */,
+				75A87A911EF9157100EF9641 /* Keyboard.xib in Resources */,
 				8ADAC44C1504BC61008B5F2A /* MainStoryboard_iPhone.storyboard in Resources */,
 				8ADAC44F1504BC61008B5F2A /* MainStoryboard_iPad.storyboard in Resources */,
 			);
@@ -304,6 +318,7 @@
 				8ADAC4451504BC61008B5F2A /* main.m in Sources */,
 				8ADAC4491504BC61008B5F2A /* AppDelegate.m in Sources */,
 				8ADAC4521504BC61008B5F2A /* ViewController.mm in Sources */,
+				75A87A971EF93A0D00EF9641 /* MarkerDetectorUtils.mm in Sources */,
 				8ADAC46D1504CA1A008B5F2A /* VideoSource.mm in Sources */,
 				8A279D1F150E3F88005F4854 /* MarkerDetector.cpp in Sources */,
 				8A205172150F8D2000E80270 /* Marker.cpp in Sources */,
@@ -312,6 +327,7 @@
 				8AFB8A40151895C600A42DEE /* CameraCalibration.cpp in Sources */,
 				8AFB8A421518CA1D00A42DEE /* GeometryTypes.cpp in Sources */,
 				8A28CB2615249CEA0049925A /* TinyLA.cpp in Sources */,
+				75A87A8F1EF9132A00EF9641 /* ARKeyboard.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -475,7 +491,7 @@
 				GCC_PREFIX_HEADER = "iOS-AR/iOS-AR-Prefix.pch";
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "$(SRCROOT)/iOS-AR/iOS-AR-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LIBRARY_SEARCH_PATHS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",
@@ -507,7 +523,7 @@
 				GCC_PREFIX_HEADER = "iOS-AR/iOS-AR-Prefix.pch";
 				HEADER_SEARCH_PATHS = "";
 				INFOPLIST_FILE = "$(SRCROOT)/iOS-AR/iOS-AR-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LIBRARY_SEARCH_PATHS = "";
 				OTHER_CPLUSPLUSFLAGS = (
 					"$(OTHER_CFLAGS)",

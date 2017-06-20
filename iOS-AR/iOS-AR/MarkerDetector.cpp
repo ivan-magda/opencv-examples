@@ -24,7 +24,6 @@
 #include <sstream>
 
 #include "MarkerDetector.hpp"
-#include "Marker.hpp"
 #include "TinyLA.hpp"
 #include "DebugHelpers.hpp"
 
@@ -66,6 +65,10 @@ const std::vector<Transformation>& MarkerDetector::getTransformations() const {
   return m_transformations;
 }
 
+const std::vector<Marker>& MarkerDetector::getMarkers() const {
+  return m_markers;
+}
+
 bool MarkerDetector::findMarkers(const BGRAVideoFrame& frame, std::vector<Marker>& detectedMarkers) {
   cv::Mat bgraMat((unsigned int)frame.height, (unsigned int)frame.width, CV_8UC4,
                   frame.data, frame.stride);
@@ -90,6 +93,8 @@ bool MarkerDetector::findMarkers(const BGRAVideoFrame& frame, std::vector<Marker
   
   // Sort by id
   std::sort(detectedMarkers.begin(), detectedMarkers.end());
+  
+  m_markers = detectedMarkers;
   
   return false;
 }

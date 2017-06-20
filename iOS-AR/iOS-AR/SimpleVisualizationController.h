@@ -26,6 +26,7 @@
 #import "EAGLView.h"
 #import "CameraCalibration.hpp"
 #import "BGRAVideoFrame.h"
+#import "ARKeyboard.h"
 
 @interface SimpleVisualizationController : NSObject {
   EAGLView * m_glview;
@@ -34,6 +35,8 @@
   CameraCalibration m_calibration;
   CGSize m_frameSize;
 }
+
+@property(nonatomic, weak) ARKeyboard *keyboard;
 
 - (id)initWithGLView:(EAGLView*)view calibration:(CameraCalibration) calibration frameSize:(CGSize) size;
 

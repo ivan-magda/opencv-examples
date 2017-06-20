@@ -28,8 +28,7 @@
 
 #include "BGRAVideoFrame.h"
 #include "CameraCalibration.hpp"
-
-class Marker;
+#include "Marker.hpp"
 
 /**
  * A top-level class that encapsulate marker detector algorithm.
@@ -50,6 +49,7 @@ public:
   void processFrame(const BGRAVideoFrame& frame);
   
   const std::vector<Transformation>& getTransformations() const;
+  const std::vector<Marker>& getMarkers() const;
   
 protected:
   
@@ -81,6 +81,7 @@ private:
   cv::Mat camMatrix;
   cv::Mat distCoeff;
   std::vector<Transformation> m_transformations;
+  std::vector<Marker> m_markers;
   
   cv::Mat m_grayscaleImage;
   cv::Mat m_thresholdImg;

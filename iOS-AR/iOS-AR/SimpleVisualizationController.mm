@@ -245,7 +245,7 @@
   [self drawBackground];
   
   // Draw 3D objects on the position of the detected markers
-  [self drawAR];
+  //[self drawAR];
   
   // Present framebuffer
   bool ok = [m_glview presentFramebuffer];

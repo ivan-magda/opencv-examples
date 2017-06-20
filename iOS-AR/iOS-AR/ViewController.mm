@@ -23,6 +23,10 @@
 #import "VideoSource.h"
 #import "MarkerDetector.hpp"
 #import "SimpleVisualizationController.h"
+#import "ARKeyboard.h"
+#import "MarkerDetectorUtils.h"
+
+#include <vector>
 
 @interface ViewController() <VideoSourceDelegate>
 
@@ -44,6 +48,9 @@
   
   _markerDetector = new MarkerDetector([self.videoSource getCalibration]);
   [self.videoSource startWithDevicePosition:AVCaptureDevicePositionBack];
+  
+  _keyboard = [[ARKeyboard alloc] initWithFrame: CGRectMake(0, 0, 200, 200)];
+  [self.view addSubview:_keyboard];
 }
 
 - (void)viewDidUnload {
@@ -62,6 +69,7 @@
                                   initWithGLView: _glview
                                   calibration: camCalib
                                   frameSize: frameSize];
+  self.visualizationController.keyboard = self.keyboard;
   
   [super viewWillAppear:animated];
 }
@@ -94,7 +102,19 @@
   dispatch_async(dispatch_get_main_queue(), ^{
     [self.visualizationController setTransformationList:(self.markerDetector->getTransformations)()];
     [self.visualizationController drawFrame];
+    [self updateKeyboard:self.markerDetector->getMarkers()];
   });
+}
+
+# pragma mark - Private -
+
+- (void)updateKeyboard:(const std::vector<Marker>) markers {
+  [self.keyboard setHidden: markers.size() == 0 ? YES : NO];
+  [self.keyboard setAlpha:markers.size() == 0 ? 0.0 : 1.0];
+  
+  if (markers.size() > 0) {
+    self.keyboard.frame = [MarkerDetectorUtils makeRectFromMarker:markers[0]];
+  }
 }
 
 @end

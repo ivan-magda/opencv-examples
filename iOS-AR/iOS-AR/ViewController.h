@@ -24,8 +24,11 @@
 
 #import "EAGLView.h"
 
+@class ARKeyboard;
+
 @interface ViewController : UIViewController
 
 @property (weak, nonatomic) IBOutlet EAGLView *glview;
+@property (strong, nonatomic) ARKeyboard *keyboard;
 
 @end
