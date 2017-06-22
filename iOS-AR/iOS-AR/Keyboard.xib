@@ -181,7 +181,7 @@
                     <color key="backgroundColor" white="1" alpha="0.75" colorSpace="calibratedWhite"/>
                 </stackView>
             </subviews>
-            <color key="backgroundColor" white="1" alpha="0.69999999999999996" colorSpace="calibratedWhite"/>
+            <color key="backgroundColor" white="1" alpha="0.55000000000000004" colorSpace="calibratedWhite"/>
             <constraints>
                 <constraint firstItem="H8h-ln-lJT" firstAttribute="top" secondItem="iN0-l3-epB" secondAttribute="top" id="4EL-Jf-rQv"/>
                 <constraint firstAttribute="bottom" secondItem="H8h-ln-lJT" secondAttribute="bottom" id="XOK-GE-oDL"/>

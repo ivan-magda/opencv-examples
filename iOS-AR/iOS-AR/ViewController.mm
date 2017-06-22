@@ -36,7 +36,9 @@
 
 @end
 
-@implementation ViewController
+@implementation ViewController {
+  BOOL _isTimeElapsed;
+}
 
 #pragma mark - View lifecycle
 
@@ -51,6 +53,8 @@
   
   _keyboard = [[ARKeyboard alloc] initWithFrame: CGRectMake(0, 0, 200, 200)];
   [self.view addSubview:_keyboard];
+  
+  _isTimeElapsed = NO;
 }
 
 - (void)viewDidUnload {
@@ -59,6 +63,8 @@
 }
 
 - (void)viewWillAppear:(BOOL)animated {
+  [super viewWillAppear:animated];
+  
   [self.glview initContext];
   
   CGSize frameSize = [self.videoSource getFrameSize];
@@ -71,7 +77,7 @@
                                   frameSize: frameSize];
   self.visualizationController.keyboard = self.keyboard;
   
-  [super viewWillAppear:animated];
+  [self simulate0412];
 }
 
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation {
@@ -109,12 +115,96 @@
 # pragma mark - Private -
 
 - (void)updateKeyboard:(const std::vector<Marker>) markers {
-  [self.keyboard setHidden: markers.size() == 0 ? YES : NO];
-  [self.keyboard setAlpha:markers.size() == 0 ? 0.0 : 1.0];
+//  [self.keyboard setHidden: markers.size() == 0 ? YES : NO];
+//  [self.keyboard setAlpha:markers.size() == 0 ? 0.0 : 1.0];
   
-  if (markers.size() > 0) {
+  if (!_isTimeElapsed && markers.size() > 0) {
     self.keyboard.frame = [MarkerDetectorUtils makeRectFromMarker:markers[0]];
   }
+}
+
+- (void)simulate0412 {
+  __weak typeof(self) weakSelf = self;
+  
+  dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 5 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+    typeof(self) strongSelf = weakSelf;
+    if (strongSelf) {
+      strongSelf->_isTimeElapsed = YES;
+      dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 4 * NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        [strongSelf enter0];
+      });
+    }
+  });
+}
+
+- (void)enter0 {
+  NSLog(@"%s", __PRETTY_FUNCTION__);
+  
+  UIColor *backgroundOriginal = self.keyboard.zeroLabel.backgroundColor;
+  UIColor *textOriginal = self.keyboard.zeroLabel.textColor;
+  
+  [UIView animateWithDuration:1 animations:^{
+    self.keyboard.zeroLabel.textColor = UIColor.whiteColor;
+    self.keyboard.zeroLabel.backgroundColor = UIColor.blackColor;
+  } completion:^(BOOL finished) {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+      self.keyboard.zeroLabel.backgroundColor = backgroundOriginal;
+      self.keyboard.zeroLabel.textColor = textOriginal;
+      [self enter4];
+    });
+  }];
+}
+
+- (void)enter4 {
+  NSLog(@"%s", __PRETTY_FUNCTION__);
+  
+  UIColor *backgroundOriginal = self.keyboard.fourLabel.backgroundColor;
+  UIColor *textOriginal = self.keyboard.fourLabel.textColor;
+  
+  [UIView animateWithDuration:1 animations:^{
+    self.keyboard.fourLabel.textColor = UIColor.whiteColor;
+    self.keyboard.fourLabel.backgroundColor = UIColor.blackColor;
+  } completion:^(BOOL finished) {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+      self.keyboard.fourLabel.backgroundColor = backgroundOriginal;
+      self.keyboard.fourLabel.textColor = textOriginal;
+      [self enter1];
+    });
+  }];
+}
+
+- (void)enter1 {
+  NSLog(@"%s", __PRETTY_FUNCTION__);
+  
+  UIColor *backgroundOriginal = self.keyboard.oneLabel.backgroundColor;
+  UIColor *textOriginal = self.keyboard.oneLabel.textColor;
+  
+  [UIView animateWithDuration:1 animations:^{
+    self.keyboard.oneLabel.textColor = UIColor.whiteColor;
+    self.keyboard.oneLabel.backgroundColor = UIColor.blackColor;
+  } completion:^(BOOL finished) {
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+      self.keyboard.oneLabel.backgroundColor = backgroundOriginal;
+      self.keyboard.oneLabel.textColor = textOriginal;
+      [self enter2];
+    });
+  }];
+}
+
+- (void)enter2 {
+  NSLog(@"%s", __PRETTY_FUNCTION__);
+  
+  [UIView animateWithDuration:1 animations:^{
+    self.keyboard.twoLabel.textColor = UIColor.whiteColor;
+    self.keyboard.twoLabel.backgroundColor = UIColor.blackColor;
+  } completion:^(BOOL finished) {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Success" message:@"You are entered password" preferredStyle:UIAlertControllerStyleAlert];
+    [self presentViewController:alert animated:YES completion:nil];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+      [self dismissViewControllerAnimated:YES completion:nil];
+    });
+  }];
 }
 
 @end

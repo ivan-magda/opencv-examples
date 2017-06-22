@@ -9,4 +9,15 @@
 
 @interface ARKeyboard : UIView
 
+@property (weak, nonatomic) IBOutlet UILabel *zeroLabel;
+@property (weak, nonatomic) IBOutlet UILabel *oneLabel;
+@property (weak, nonatomic) IBOutlet UILabel *twoLabel;
+@property (weak, nonatomic) IBOutlet UILabel *threeLabel;
+@property (weak, nonatomic) IBOutlet UILabel *fourLabel;
+@property (weak, nonatomic) IBOutlet UILabel *fiveLabel;
+@property (weak, nonatomic) IBOutlet UILabel *sixLabel;
+@property (weak, nonatomic) IBOutlet UILabel *sevenLabel;
+@property (weak, nonatomic) IBOutlet UILabel *eightLabel;
+@property (weak, nonatomic) IBOutlet UILabel *nineLabel;
+
 @end
